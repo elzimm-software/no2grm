@@ -31,6 +31,7 @@ struct Bounds {
     int bottom;
 };
 
+/// Create a new grid structure with the given dimensions.
 Grid create_grid(const int size_x, const int size_y) {
     Grid g;
     g.n_cols = size_x;
@@ -46,6 +47,7 @@ Grid create_grid(const int size_x, const int size_y) {
     return g;
 }
 
+/// Create a new bounds structure with the given limits.
 Bounds create_bounds(const int left, const int right, const int top, const int bottom) {
     Bounds b;
     b.left = left;
@@ -55,6 +57,7 @@ Bounds create_bounds(const int left, const int right, const int top, const int b
     return b;
 }
 
+/// Compute the actual bounds such that each cell is a square
 Bounds compute_bounds(const int n_cols, const int n_rows, const int cell_size, const int left, const int right, const int top, const int bottom) {
     const int width = cell_size * n_cols;
     const int height = cell_size * n_rows;
@@ -86,12 +89,14 @@ Bounds draw_grid(const int n_cols, const int n_rows, const int cell_size, const 
     return b;
 }
 
+/// Compute the x and y index of the cell a the given position.
 std::tuple<size_t, size_t> find_cell(const Vector2& pos, const int cell_size, const Bounds bounds) {
     int x = (pos.x - bounds.left) / cell_size;
     int y = (pos.y - bounds.top) / cell_size;
     return std::make_tuple(x, y);
 }
 
+/// Change the state of the cell at the given index
 void set_cell(Grid& g, const size_t x, const size_t y, const FillType fill) {
     if (x >= g.n_cols || y >= g.n_rows) {
         return;
@@ -100,6 +105,7 @@ void set_cell(Grid& g, const size_t x, const size_t y, const FillType fill) {
 }
 
 int main() {
+    // ----- INIT WINDOW -----
     const int display = GetCurrentMonitor();
     const int monitor_width = GetMonitorWidth(display);
     const int monitor_height = GetMonitorHeight(display);
@@ -110,18 +116,23 @@ int main() {
 
     SetTargetFPS(60);
 
+    // ----- INIT STATE -----
     Grid g = create_grid(15,  15);
     const int padding = 100;
     const int cell_size = 50;
     Bounds actual_bounds = compute_bounds(g.n_cols, g.n_rows, cell_size, padding, GetScreenWidth() - padding, padding, GetScreenHeight() - padding);
 
 
+    // ----- EVENT AND RENDER LOOP -----
     while (!WindowShouldClose()) {
+        // ----- EVENT HANDING -----
         if (IsKeyPressed(KEY_ESCAPE)) {
             break;
         }
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+            // get cell at mouse
             auto cell_index = find_cell(GetMousePosition(), cell_size, actual_bounds);
+            // change cell
             set_cell(g, std::get<1>(cell_index), std::get<0>(cell_index), Solid);
         }
         if (IsMouseButtonPressed(MOUSE_BUTTON_MIDDLE)) {
@@ -133,15 +144,14 @@ int main() {
             set_cell(g, std::get<1>(cell_index), std::get<0>(cell_index), Cross);
         }
 
-
-        BeginDrawing();
-        {
+        // ----- RENDERING -----
+        BeginDrawing(); {
             ClearBackground(Color(0x33, 0x33, 0x33));
-            draw_grid(g.n_cols, g.n_rows, cell_size, padding, GetScreenWidth() - padding, padding, GetScreenHeight() - padding, RAYWHITE);
-        }
-        EndDrawing();
+            actual_bounds = draw_grid(g.n_cols, g.n_rows, cell_size, padding, GetScreenWidth() - padding, padding, GetScreenHeight() - padding, RAYWHITE);
+        } EndDrawing();
     }
 
+    // ----- CLEANUP -----
     CloseWindow();
 
     return 0;
