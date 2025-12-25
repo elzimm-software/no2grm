@@ -1,13 +1,11 @@
 #include "raylib.h"
 #include "state.h"
 #include "grid.h"
-#include "states/create.h"
 
 int main() {
     // ----- DEFINE STATES -----
-    State create;
-    create.event_handler = state_create_event_handler;
-    create.draw = state_create_draw;
+    State home = new_home_state();
+    State create = new_create_state();
     // ----- INIT WINDOW -----
     const int display = GetCurrentMonitor();
     const int monitor_width = GetMonitorWidth(display);
@@ -21,7 +19,7 @@ int main() {
 
     // ----- INIT STATE -----
     State state = create;
-    Grid g = create_grid(15,  15);
+    Grid g = new_grid(15, 15);
     const int padding = 100;
     const int cell_size = 50;
     Bounds actual_bounds = compute_bounds(g.n_cols, g.n_rows, cell_size, padding, GetScreenWidth() - padding, padding, GetScreenHeight() - padding);
@@ -35,7 +33,7 @@ int main() {
         }
 
         // ----- RENDERING -----
-        state.draw(g, padding, cell_size, actual_bounds);
+        state.draw(g, padding, cell_size);
     }
 
     // ----- CLEANUP -----

@@ -24,7 +24,7 @@ struct Grid {
 };
 
 /// Create a new grid structure with the given dimensions.
-Grid create_grid(int size_x, int size_y);
+Grid new_grid(int size_x, int size_y);
 
 /// Draws grid of squares
 /// Returns actual size of grid after scaling

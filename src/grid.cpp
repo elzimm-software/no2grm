@@ -1,6 +1,6 @@
 #include "grid.h"
 
-Grid create_grid(const int size_x, const int size_y) {
+Grid new_grid(const int size_x, const int size_y) {
     Grid g;
     g.n_cols = size_x;
     g.n_rows = size_y;

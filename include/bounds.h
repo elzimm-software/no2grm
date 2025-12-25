@@ -9,9 +9,9 @@ struct Bounds {
 };
 
 /// Create a new bounds structure with the given limits.
-Bounds create_bounds(int left, int right, int top, int bottom);
+Bounds new_bounds(int left, int right, int top, int bottom);
 
 /// Compute the actual bounds such that each cell is a square
-Bounds compute_bounds(const int n_cols, const int n_rows, const int cell_size, const int left, const int right, const int top, const int bottom);
+Bounds compute_bounds(int n_cols, int n_rows, int cell_size, int left, int right, int top, int bottom);
 
 #endif
