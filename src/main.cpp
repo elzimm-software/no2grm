@@ -2,10 +2,13 @@
 #include "state.h"
 #include "grid.h"
 
+
+
 int main() {
     // ----- DEFINE STATES -----
-    State home = new_home_state();
-    State create = new_create_state();
+    StateFn home = new_home_state();
+    StateFn create = new_create_state();
+
     // ----- INIT WINDOW -----
     const int display = GetCurrentMonitor();
     const int monitor_width = GetMonitorWidth(display);
@@ -18,22 +21,23 @@ int main() {
     SetTargetFPS(60);
 
     // ----- INIT STATE -----
-    State state = create;
-    Grid g = new_grid(15, 15);
-    const int padding = 100;
-    const int cell_size = 50;
-    Bounds actual_bounds = compute_bounds(g.n_cols, g.n_rows, cell_size, padding, GetScreenWidth() - padding, padding, GetScreenHeight() - padding);
+    StateFn state_fn = create;
+    StateRec state_rec;
+    state_rec.grid = new_grid(15, 15);
+    state_rec.padding = 100;
+    state_rec.cell_size = 50;
+    state_rec.actual_bounds = compute_bounds(state_rec.grid.n_cols, state_rec.grid.n_rows, state_rec.cell_size, state_rec.padding, GetScreenWidth() - state_rec.padding, state_rec.padding, GetScreenHeight() - state_rec.padding);
 
 
     // ----- EVENT AND RENDER LOOP -----
     while (!WindowShouldClose()) {
         // ----- EVENT HANDING -----
-        if (!state.event_handler(g, cell_size, actual_bounds)) {
+        if (!state_fn.event_handler(state_fn, state_rec)) {
             break;
         }
 
         // ----- RENDERING -----
-        state.draw(g, padding, cell_size);
+        state_fn.draw(state_rec);
     }
 
     // ----- CLEANUP -----

@@ -5,11 +5,11 @@
 #include "state.h"
 #include "bounds.h"
 
-State new_create_state();
+StateFn new_create_state();
 
-namespace create {
-    bool event_handler(Grid& g, int cell_size, Bounds actual_bounds);
-    void draw(const Grid& g, int padding, int cell_size);
+namespace create_fn {
+    bool event_handler(StateFn& fn, StateRec& rec);
+    void draw(const StateRec& rec);
 }
 
 #endif

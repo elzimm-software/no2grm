@@ -5,11 +5,11 @@
 #include "grid.h"
 #include "bounds.h"
 
-State new_home_state();
+StateFn new_home_state();
 
-namespace home {
-    bool event_handler(Grid& g, int cell_size, Bounds actual_bounds);
-    void draw(const Grid& g, int padding, int cell_size);
+namespace home_fn {
+    bool event_handler(StateFn& fn, StateRec& rec);
+    void draw(const StateRec& rec);
 }
 
 #endif
