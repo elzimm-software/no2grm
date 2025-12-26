@@ -32,6 +32,34 @@ Bounds draw_grid(const int n_cols, const int n_rows, const int cell_size, const 
     return b;
 }
 
+void color_cells(const std::vector<size_t>& x, const std::vector<size_t>& y, const FillType fill, const int cell_size, const Bounds& bounds, const Color color, const float thickness, const float radius) {
+    float left;
+    float right;
+    float top;
+    float bottom;
+    for (int i = 0; i < x.size(); i++) {
+        switch (fill) {
+            case Solid:
+                DrawRectangle(bounds.left + x[i] * cell_size, bounds.top + y[i] * cell_size, cell_size, cell_size, color);
+                break;
+            case Empty:
+                DrawRectangle(bounds.left + x[i] * cell_size, bounds.top + y[i] * cell_size, cell_size, cell_size, Color(0x33, 0x33, 0x33));
+                break;
+            case Cross:
+                left = bounds.left + x[i] * cell_size;
+                right = left + cell_size;
+                top = bounds.top + y[i] * cell_size;
+                bottom = top + cell_size;
+                DrawLineEx({left, top}, {right, bottom}, thickness, color);
+                DrawLineEx({left, bottom}, {right, top}, thickness, color);
+                break;
+            case Note:
+                DrawCircle(bounds.left + x[i] * cell_size + cell_size / 2, bounds.top + y[i] * cell_size + cell_size / 2, radius, color);
+                break;
+        }
+    }
+}
+
 void color_cells(const Grid& g, const int cell_size, const Bounds& bounds,
                  const Color color, const float thickness, const float radius) {
     float left;
@@ -65,13 +93,35 @@ void color_cells(const Grid& g, const int cell_size, const Bounds& bounds,
 std::tuple<size_t, size_t> find_cell(const Vector2& pos, const int cell_size, const Bounds bounds) {
     int x = (pos.x - bounds.left) / cell_size;
     int y = (pos.y - bounds.top) / cell_size;
-    std::cout << "x: " << x << ", y: " << y << std::endl;
     return std::make_tuple(x, y);
 }
 
-void set_cell(Grid& g, const size_t x, const size_t y, const FillType fill) {
+void set_cell(Grid& g, const size_t x, const size_t y, const FillType fill, bool clear) {
     if (x >= g.n_cols || y >= g.n_rows) {
         return;
     }
-    g.cells[y][x] = fill;
+    switch (g.cells[y][x]) {
+        case Empty:
+            g.cells[y][x] = fill;
+            break;
+        case Solid:
+            if (fill == Solid) {
+                g.cells[y][x] = Empty;
+            }
+            break;
+        case Cross:
+            if (fill == Cross) {
+                g.cells[y][x] = Empty;
+            }
+            break;
+        case Note:
+            if (fill == Note) {
+                g.cells[y][x] = Empty;
+            } else {
+                g.cells[y][x] = fill;
+            }
+            break;
+    }
+
+
 }

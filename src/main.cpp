@@ -2,8 +2,6 @@
 #include "state.h"
 #include "grid.h"
 
-
-
 int main() {
     // ----- INIT WINDOW -----
     const int display = GetCurrentMonitor();
@@ -23,6 +21,10 @@ int main() {
     state_rec.padding = 100;
     state_rec.cell_size = 50;
     state_rec.actual_bounds = compute_bounds(state_rec.grid.n_cols, state_rec.grid.n_rows, state_rec.cell_size, state_rec.padding, GetScreenWidth() - state_rec.padding, state_rec.padding, GetScreenHeight() - state_rec.padding);
+    state_rec.current_line_x.resize(std::max(state_rec.grid.n_rows, state_rec.grid.n_cols));
+    state_rec.current_line_y.resize(std::max(state_rec.grid.n_rows, state_rec.grid.n_cols));
+    state_rec.current_line_x.clear();
+    state_rec.current_line_y.clear();
 
     // ----- DEFINE STATES -----
     state_rec.home = new_home_state();

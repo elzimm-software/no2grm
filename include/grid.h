@@ -30,6 +30,8 @@ Grid new_grid(int size_x, int size_y);
 /// Returns actual size of grid after scaling
 Bounds draw_grid(int n_cols, int n_rows, int cell_size, int left, int right, int top, int bottom, Color color);
 
+void color_cells(const std::vector<size_t>& x, const std::vector<size_t>& y, FillType fill, int cell_size, const Bounds& bounds, Color color, float thickness, float radius);
+
 void color_cells(const Grid& g, int cell_size, const Bounds& bounds,
                  Color color, float thickness, float radius);
 
@@ -37,6 +39,6 @@ void color_cells(const Grid& g, int cell_size, const Bounds& bounds,
 std::tuple<size_t, size_t> find_cell(const Vector2& pos, int cell_size, Bounds bounds);
 
 /// Change the state of the cell at the given index
-void set_cell(Grid& g, size_t x, size_t y, FillType fill);
+void set_cell(Grid& g, size_t x, size_t y, FillType fill, bool clear);
 
 #endif
