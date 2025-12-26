@@ -15,15 +15,15 @@ bool create_fn::event_handler(StateFn& fn, StateRec& rec) {
         // get cell at mouse
         auto cell_index = find_cell(GetMousePosition(), rec.cell_size, rec.actual_bounds);
         // change cell
-        set_cell(rec.grid, std::get<1>(cell_index), std::get<0>(cell_index), Solid);
+        set_cell(rec.grid, std::get<0>(cell_index), std::get<1>(cell_index), Solid);
     }
     if (IsMouseButtonPressed(MOUSE_BUTTON_MIDDLE)) {
         auto cell_index = find_cell(GetMousePosition(), rec.cell_size, rec.actual_bounds);
-        set_cell(rec.grid, std::get<1>(cell_index), std::get<0>(cell_index), Note);
+        set_cell(rec.grid, std::get<0>(cell_index), std::get<1>(cell_index), Note);
     }
     if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
         auto cell_index = find_cell(GetMousePosition(), rec.cell_size, rec.actual_bounds);
-        set_cell(rec.grid, std::get<1>(cell_index), std::get<0>(cell_index), Cross);
+        set_cell(rec.grid, std::get<0>(cell_index), std::get<1>(cell_index), Cross);
     }
     return true;
 }
@@ -32,8 +32,9 @@ void create_fn::draw(const StateRec& rec) {
     BeginDrawing();
     {
         ClearBackground(Color(0x33, 0x33, 0x33));
-        draw_grid(rec.grid.n_cols, rec.grid.n_rows, rec.cell_size, rec.padding, GetScreenWidth() - rec.padding, rec.padding,
-                                  GetScreenHeight() - rec.padding, RAYWHITE);
+        DrawFPS(0,0);
+        draw_grid(rec.grid.n_cols, rec.grid.n_rows, rec.cell_size, rec.padding, GetScreenWidth() - rec.padding, rec.padding,GetScreenHeight() - rec.padding, RAYWHITE);
+        color_cells(rec.grid, rec.cell_size, rec.actual_bounds, RAYWHITE, 2.0, 4.0);
     }
     EndDrawing();
 }

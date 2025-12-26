@@ -1,3 +1,4 @@
+#include <iostream>
 #include "grid.h"
 
 Grid new_grid(const int size_x, const int size_y) {
@@ -31,9 +32,40 @@ Bounds draw_grid(const int n_cols, const int n_rows, const int cell_size, const 
     return b;
 }
 
+void color_cells(const Grid& g, const int cell_size, const Bounds& bounds,
+                 const Color color, const float thickness, const float radius) {
+    float left;
+    float right;
+    float top;
+    float bottom;
+    for (int y = 0; y < g.n_rows; y++) {
+        for (int x = 0; x < g.n_cols; x++) {
+            switch (g.cells[y][x]) {
+                case Solid:
+                    DrawRectangle(bounds.left + x * cell_size, bounds.top + y * cell_size, cell_size, cell_size, color);
+                    break;
+                case Empty:
+                    break;
+                case Cross:
+                    left = bounds.left + x * cell_size;
+                    right = left + cell_size;
+                    top = bounds.top + y * cell_size;
+                    bottom = top + cell_size;
+                    DrawLineEx({left, top}, {right, bottom}, thickness, color);
+                    DrawLineEx({left, bottom}, {right, top}, thickness, color);
+                    break;
+                case Note:
+                    DrawCircle(bounds.left + x * cell_size + cell_size / 2, bounds.top + y * cell_size + cell_size / 2, radius, color);
+                    break;
+            }
+        }
+    }
+}
+
 std::tuple<size_t, size_t> find_cell(const Vector2& pos, const int cell_size, const Bounds bounds) {
     int x = (pos.x - bounds.left) / cell_size;
     int y = (pos.y - bounds.top) / cell_size;
+    std::cout << "x: " << x << ", y: " << y << std::endl;
     return std::make_tuple(x, y);
 }
 

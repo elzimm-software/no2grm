@@ -30,6 +30,9 @@ Grid new_grid(int size_x, int size_y);
 /// Returns actual size of grid after scaling
 Bounds draw_grid(int n_cols, int n_rows, int cell_size, int left, int right, int top, int bottom, Color color);
 
+void color_cells(const Grid& g, int cell_size, const Bounds& bounds,
+                 Color color, float thickness, float radius);
+
 /// Compute the x and y index of the cell a the given position.
 std::tuple<size_t, size_t> find_cell(const Vector2& pos, int cell_size, Bounds bounds);
 
