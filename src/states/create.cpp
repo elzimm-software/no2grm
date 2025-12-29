@@ -27,19 +27,23 @@ bool create_fn::event_handler(StateFn& fn, StateRec& rec) {
         rec.current_fill = Solid;
         size_t x = std::get<0>(cell_index);
         size_t y = std::get<1>(cell_index);
-        if (rec.grid.cells[y][x] == Solid){
-            rec.clear = true;
-        }
-        if (rec.grid.cells[y][x] != Cross) {
-            rec.current_line_x.push_back(x);
-            rec.current_line_y.push_back(y);
+        if (x < rec.grid.n_cols && y < rec.grid.n_rows) {
+            if (rec.grid.cells[y][x] == Solid) {
+                rec.clear = true;
+            }
+            if (rec.grid.cells[y][x] != Cross) {
+                rec.current_line_x.push_back(x);
+                rec.current_line_y.push_back(y);
+            }
         }
     } else if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && rec.current_fill == Solid) {
         auto cell_index = find_cell(GetMousePosition(), rec.cell_size, rec.actual_bounds);
         size_t x = std::get<0>(cell_index);
         size_t y = std::get<1>(cell_index);
-        if (rec.grid.cells[y][x] != Cross) {
-            add_cell(rec, x, y);
+        if (x < rec.grid.n_cols && y < rec.grid.n_rows) {
+            if (rec.grid.cells[y][x] != Cross) {
+                add_cell(rec, x, y);
+            }
         }
     }
 
@@ -48,19 +52,23 @@ bool create_fn::event_handler(StateFn& fn, StateRec& rec) {
         rec.current_fill = Note;
         size_t x = std::get<0>(cell_index);
         size_t y = std::get<1>(cell_index);
-        if (rec.grid.cells[y][x] == Note){
-            rec.clear = true;
-        }
-        if (rec.grid.cells[y][x] == Empty || rec.grid.cells[y][x] == Note) {
-            rec.current_line_x.push_back(x);
-            rec.current_line_y.push_back(y);
+        if (x < rec.grid.n_cols && y < rec.grid.n_rows) {
+            if (rec.grid.cells[y][x] == Note) {
+                rec.clear = true;
+            }
+            if (rec.grid.cells[y][x] == Empty || rec.grid.cells[y][x] == Note) {
+                rec.current_line_x.push_back(x);
+                rec.current_line_y.push_back(y);
+            }
         }
     } else if (IsMouseButtonDown(MOUSE_BUTTON_MIDDLE) && rec.current_fill == Note) {
         auto cell_index = find_cell(GetMousePosition(), rec.cell_size, rec.actual_bounds);
         size_t x = std::get<0>(cell_index);
         size_t y = std::get<1>(cell_index);
-        if (rec.grid.cells[y][x] == Empty || rec.grid.cells[y][x] == Note) {
-            add_cell(rec, x, y);
+        if (x < rec.grid.n_cols && y < rec.grid.n_rows) {
+            if (rec.grid.cells[y][x] == Empty || rec.grid.cells[y][x] == Note) {
+                add_cell(rec, x, y);
+            }
         }
     }
 
@@ -70,19 +78,23 @@ bool create_fn::event_handler(StateFn& fn, StateRec& rec) {
         rec.current_fill = Cross;
         size_t x = std::get<0>(cell_index);
         size_t y = std::get<1>(cell_index);
-        if (rec.grid.cells[y][x] == Cross){
-            rec.clear = true;
-        }
-        if (rec.grid.cells[y][x] != Solid) {
-            rec.current_line_x.push_back(x);
-            rec.current_line_y.push_back(y);
+        if (x < rec.grid.n_cols && y < rec.grid.n_rows) {
+            if (rec.grid.cells[y][x] == Cross) {
+                rec.clear = true;
+            }
+            if (rec.grid.cells[y][x] != Solid) {
+                rec.current_line_x.push_back(x);
+                rec.current_line_y.push_back(y);
+            }
         }
     } else if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT) && rec.current_fill == Cross) {
         auto cell_index = find_cell(GetMousePosition(), rec.cell_size, rec.actual_bounds);
         size_t x = std::get<0>(cell_index);
         size_t y = std::get<1>(cell_index);
-        if (rec.grid.cells[y][x] != Solid) {
-            add_cell(rec, x, y);
+        if (x < rec.grid.n_cols && y < rec.grid.n_rows) {
+            if (rec.grid.cells[y][x] != Solid) {
+                add_cell(rec, x, y);
+            }
         }
     }
 
