@@ -51,6 +51,7 @@ void color_cells(const std::vector<size_t>& x, const std::vector<size_t>& y, con
                 right = left + cell_size;
                 top = bounds.top + y[i] * cell_size;
                 bottom = top + cell_size;
+                DrawRectangle(left, top, cell_size, cell_size, BACKGROUND);
                 DrawLineEx({left, top}, {right, bottom}, thickness, color);
                 DrawLineEx({left, bottom}, {right, top}, thickness, color);
                 break;
