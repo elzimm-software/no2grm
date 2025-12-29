@@ -1,4 +1,5 @@
 #include "states/create.h"
+#include "colors.h"
 
 StateFn new_create_state() {
     StateFn s;
@@ -87,17 +88,17 @@ bool create_fn::event_handler(StateFn& fn, StateRec& rec) {
 void create_fn::draw(const StateRec& rec) {
     BeginDrawing();
     {
-        ClearBackground(Color(0x33, 0x33, 0x33));
+        ClearBackground(BACKGROUND);
         DrawFPS(0,0);
-        color_cells(rec.grid, rec.cell_size, rec.actual_bounds, RAYWHITE, 2.0, 4.0);
+        color_cells(rec.grid, rec.cell_size, rec.actual_bounds, FILL, 2.0, 4.0);
         FillType fill;
         if (rec.clear) {
             fill = Empty;
         } else {
             fill = rec.current_fill;
         }
-        color_cells(rec.current_line_x, rec.current_line_y, fill, rec.cell_size, rec.actual_bounds, RAYWHITE, 2.0, 4.0);
-        draw_grid(rec.grid.n_cols, rec.grid.n_rows, rec.cell_size, rec.padding, GetScreenWidth() - rec.padding, rec.padding,GetScreenHeight() - rec.padding, RAYWHITE);
+        color_cells(rec.current_line_x, rec.current_line_y, fill, rec.cell_size, rec.actual_bounds, FILL, 2.0, 4.0);
+        draw_grid(rec.grid.n_cols, rec.grid.n_rows, rec.cell_size, rec.padding, GetScreenWidth() - rec.padding, rec.padding,GetScreenHeight() - rec.padding, FILL);
     }
     EndDrawing();
 }

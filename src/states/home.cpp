@@ -1,4 +1,5 @@
 #include "states/home.h"
+#include "colors.h"
 
 StateFn new_home_state() {
     StateFn s;
@@ -20,9 +21,9 @@ bool home_fn::event_handler(StateFn& fn, StateRec& rec) {
 void home_fn::draw(const StateRec& rec) {
     BeginDrawing();
     {
-        ClearBackground(Color(0x33, 0x33, 0x33));
-        DrawText("HOME", (GetScreenWidth() - MeasureText("HOME", 40)) / 2, GetScreenHeight() / 2 - 40, 40, RAYWHITE);
-        DrawText("Press N to create a new Nonogram", (GetScreenWidth() - MeasureText("Press N to create a new Nonogram", 20)) / 2, GetScreenHeight() / 2 + 20, 20, RAYWHITE);
+        ClearBackground(BACKGROUND);
+        DrawText("HOME", (GetScreenWidth() - MeasureText("HOME", 40)) / 2, GetScreenHeight() / 2 - 40, 40, FILL);
+        DrawText("Press N to create a new Nonogram", (GetScreenWidth() - MeasureText("Press N to create a new Nonogram", 20)) / 2, GetScreenHeight() / 2 + 20, 20, FILL);
     }
     EndDrawing();
 }

@@ -1,5 +1,6 @@
 #include <iostream>
 #include "grid.h"
+#include "colors.h"
 
 Grid new_grid(const int size_x, const int size_y) {
     Grid g;
@@ -43,7 +44,7 @@ void color_cells(const std::vector<size_t>& x, const std::vector<size_t>& y, con
                 DrawRectangle(bounds.left + x[i] * cell_size, bounds.top + y[i] * cell_size, cell_size, cell_size, color);
                 break;
             case Empty:
-                DrawRectangle(bounds.left + x[i] * cell_size, bounds.top + y[i] * cell_size, cell_size, cell_size, Color(0x33, 0x33, 0x33));
+                DrawRectangle(bounds.left + x[i] * cell_size, bounds.top + y[i] * cell_size, cell_size, cell_size, BACKGROUND);
                 break;
             case Cross:
                 left = bounds.left + x[i] * cell_size;
