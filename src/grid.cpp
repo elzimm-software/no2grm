@@ -12,7 +12,7 @@ Grid new_grid(const int size_x, const int size_y) {
     g.col_max_rules = 0;
     g.cells.resize(size_y);
     for (int i = 0; i < size_y; i++) {
-        g.cells[i].resize(size_x);
+        g.cells[i].resize(size_x, Empty);
     }
     return g;
 }
