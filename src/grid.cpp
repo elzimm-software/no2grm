@@ -6,11 +6,17 @@ Grid new_grid(const int size_x, const int size_y) {
     Grid g;
     g.n_cols = size_x;
     g.n_rows = size_y;
+    // there will always be exactly as many rule sets as rows or cols
     g.row_rules.resize(size_y);
     g.col_rules.resize(size_x);
+    // clear before first use
+    g.row_rules.clear();
+    g.col_rules.clear();
     g.row_max_rules = 0;
     g.col_max_rules = 0;
+    // resize for rows
     g.cells.resize(size_y);
+    // resize each column
     for (int i = 0; i < size_y; i++) {
         g.cells[i].resize(size_x, Empty);
     }
@@ -38,6 +44,8 @@ void color_cells(const std::vector<size_t>& x, const std::vector<size_t>& y, con
     float right;
     float top;
     float bottom;
+    // because this is designed to overwrite the already drawn grid state,
+    // all fills have a background rect added to them
     for (int i = 0; i < x.size(); i++) {
         switch (fill) {
             case Solid:

@@ -30,8 +30,11 @@ Grid new_grid(int size_x, int size_y);
 /// Returns actual size of grid after scaling
 Bounds draw_grid(int n_cols, int n_rows, int cell_size, int left, int right, int top, int bottom, Color color);
 
+/// Draws points in vector
+/// Used for temporary overwrites of grid state
 void color_cells(const std::vector<size_t>& x, const std::vector<size_t>& y, FillType fill, int cell_size, const Bounds& bounds, Color color, float thickness, float radius);
 
+/// Draws grid state
 void color_cells(const Grid& g, int cell_size, const Bounds& bounds,
                  Color color, float thickness, float radius);
 
