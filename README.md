@@ -1,4 +1,4 @@
-# Nonogram
+# No2grm - Minimal, desktop Nonogram engine
 
 ## Known Issues
 
