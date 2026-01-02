@@ -110,11 +110,15 @@ bool create_fn::event_handler(StateFn& fn, StateRec& rec) {
     return true;
 }
 
+const char* SAVE_TEXT = "Press S to save the current Nonogram";
+const int SAVE_SIZE = 20;
+
 void create_fn::draw(const StateRec& rec) {
     BeginDrawing();
     {
         ClearBackground(BACKGROUND);
         DrawFPS(0,0);
+        DrawText(SAVE_TEXT, (GetScreenWidth() - MeasureText(SAVE_TEXT, SAVE_SIZE)) / 2, rec.actual_bounds.top - SAVE_SIZE * 2, SAVE_SIZE, FILL);
         color_cells(rec.grid, rec.cell_size, rec.actual_bounds, FILL, 2.0, 4.0);
         FillType fill;
         if (rec.clear) {
