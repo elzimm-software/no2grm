@@ -18,12 +18,17 @@ bool home_fn::event_handler(StateFn& fn, StateRec& rec) {
     return true;
 }
 
+const char* TITLE_TEXT = "HOME";
+const int TITLE_SIZE = 40;
+const char* NEW_TEXT = "Press N to create a new Nonogram";
+const int NEW_SIZE = 20;
+
 void home_fn::draw(const StateRec& rec) {
     BeginDrawing();
     {
         ClearBackground(BACKGROUND);
-        DrawText("HOME", (GetScreenWidth() - MeasureText("HOME", 40)) / 2, GetScreenHeight() / 2 - 40, 40, FILL);
-        DrawText("Press N to create a new Nonogram", (GetScreenWidth() - MeasureText("Press N to create a new Nonogram", 20)) / 2, GetScreenHeight() / 2 + 20, 20, FILL);
+        DrawText(TITLE_TEXT, (GetScreenWidth() - MeasureText(TITLE_TEXT, TITLE_SIZE)) / 2, GetScreenHeight() / 2 - TITLE_SIZE, TITLE_SIZE, FILL);
+        DrawText(NEW_TEXT, (GetScreenWidth() - MeasureText(NEW_TEXT, NEW_SIZE)) / 2, GetScreenHeight() / 2 + NEW_SIZE, NEW_SIZE, FILL);
     }
     EndDrawing();
 }
