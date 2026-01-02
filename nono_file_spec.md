@@ -1,65 +1,65 @@
-# Nono File Specification
+# Nonogram Rule Format (.nono) \[v1.0\]
 
-Nonograms are stored in `.nono` files.
+**Endianness:** Little-Endian
 
-**Warning:** No intermediate game state is stored, only the rules.
+**Alignment:** 4-byte header, 2-byte data
 
-## Header
+## Header Structure (16 bytes)
 
-### Magic Bytes
-
-`89 4e 4f 32 0d 0a`
-
-### Version Number
-
-`<version number (curr: 0x01)>`
+| Offset | Size | Field       | Type    | Description                                                |
+|--------|------|-------------|---------|------------------------------------------------------------|
+| 0      | 6    | Magic Bytes | char[6] | `89 4E 4F 32 0D 0A`                                        |
+| 6      | 1    | Version     | uint8   | Current version `0x01`                                     |
+| 7      | 1    | Flags       | uint8   | See [**Flags**](#Flags) table                              |
+| 8      | 1    | Header Size | uint8   | Fixed at `0x10`                                            |
+| 9      | 3    | Padding     | byte[3] | Reserved; Must be `00 00 00`                               |
+| 12     | 4    | Data Size   | uint32  | Total byte length of the [**Data**](#Data-Structure) block |
 
 ### Flags
 
-`<flags (1 byte)>`
+| Bit | Name         | Description                                                                   |
+|-----|--------------|-------------------------------------------------------------------------------|
+| 0   | HAS_CHECKSUM | If set, a 4-byte CRC32 checksum follows the [**Data**](#Data-Structure) block |
+| 1-7 | RESERVED     | Must be set to `0x00`                                                         |
 
-| Bit | Value            |
-|-----|------------------|
-| 0   | Checksum Present |
-| 1   | Unused           |
-| 2   | Unused           |
-| 3   | Unused           |
-| 4   | Unused           |
-| 5   | Unused           |
-| 6   | Unused           |
-| 7   | Unused           |
+## Data Structure
+
+### Ruleset
+*(Not used here; defined for reference below)*
+
+| Field      | Size             | Description                        |
+|------------|------------------|------------------------------------|
+| Rule Count | 2 bytes          | Total number of rules in set ($N$) |
+| Rules      | $N\times2$ bytes | $N$ consecutive 2-byte rules       |
 
 
-### Header Size
+### Row Definitions
 
-`10`
+| Field     | Size     | Description                                    |
+|-----------|----------|------------------------------------------------|
+| Row Count | 2 bytes  | Total number of [**Rulesets**](#Ruleset) ($M$) |
+| Rulesets  | Variable | $M$ consecutive [**Rulesets**](#Ruleset)       |
 
-### Data Size
+### Column Definitions
 
-`<data size (4 byte, LE)>`
-
-### Padding
-
-`00 00 00`
-
-## Data
-
-### Row Count
-
-`<row count (2 bytes)`
-
-### Row
-
-`<rule count (2 bytes)>` `<rule (2 bytes)>...`
-
-### Column Count
-
-`<column count>`
-
-### Column
-
-`<rule count (2 bytes)>` `<rule (2 bytes)>...`
+| Field        | Size     | Description                                    |
+|--------------|----------|------------------------------------------------|
+| Column Count | 2 bytes  | Total number of [**Rulesets**](#Ruleset) ($K$) |
+| Rulesets     | Variable | $K$ consecutive [**Rulesets**](#Ruleset)       |
 
 ## Checksum
 
-`<checksum>`
+If [**Flags**](#Flags) **Bit 0** is set, a checksum is present immediately following the [**Data**](#Data-Structure) block.
+
+- **Type:** CRC32, 4 bytes
+- **Scope:** [**Data**](#Data-Structure) block only
+
+## Notes
+
+- If [**Magic Bytes**](#Header-Structure-16-bytes) are altered in any way, file should be considered corrupted.
+
+- No intermediate state is stored, only [**Rulesets**](#Ruleset) and their arrangement.
+
+- Header size may be altered in future versions, prefer [**Header Size**](#Header-Structure-16-bytes) field.
+
+- Empty rows/columns are treated as a ruleset with a single rule of 0, not an empty ruleset.
