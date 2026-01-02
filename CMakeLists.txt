@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.31)
-project(nonogram)
+project(no2grm)
 
 set(CMAKE_CXX_STANDARD 20)
 

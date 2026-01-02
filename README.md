@@ -1,4 +1,4 @@
-# Nonogram
+# No$^2$grm - Minimal, desktop Nonogram engine
 
 ## Known Issues
 
