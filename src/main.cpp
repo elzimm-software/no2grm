@@ -4,10 +4,10 @@
 
 int main() {
     // ----- INIT WINDOW -----
-    const int display = GetCurrentMonitor();
-    const int monitor_width = GetMonitorWidth(display);
-    const int monitor_height = GetMonitorHeight(display);
-    InitWindow(monitor_width, monitor_height, "Nonograms");
+    const int DISPLAY = GetCurrentMonitor();
+    const int MONITOR_WIDTH = GetMonitorWidth(DISPLAY);
+    const int MONITOR_HEIGHT = GetMonitorHeight(DISPLAY);
+    InitWindow(MONITOR_WIDTH, MONITOR_HEIGHT, "Nonograms");
     if (!IsWindowFullscreen()) {
         ToggleBorderlessWindowed();
     }
