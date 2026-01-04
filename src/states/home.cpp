@@ -1,7 +1,6 @@
 #include "states/home.h"
-#include "colors.h"
 
-StateFn new_home_state() {
+static StateFn new_home_state() {
     StateFn s;
     s.event_handler = home_fn::event_handler;
     s.draw = home_fn::draw;
@@ -23,7 +22,7 @@ const int TITLE_SIZE = 40;
 const char* NEW_TEXT = "Press N to create a new Nonogram";
 const int NEW_SIZE = 20;
 
-void home_fn::draw(const StateRec& rec) {
+void home_fn::draw(StateRec& rec) {
     BeginDrawing();
     {
         ClearBackground(BACKGROUND);

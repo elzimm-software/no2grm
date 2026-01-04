@@ -1,134 +1,144 @@
-#include <iostream>
 #include "grid.h"
-#include "colors.h"
 
 Grid new_grid(const int size_x, const int size_y) {
-    Grid g;
-    g.n_cols = size_x;
-    g.n_rows = size_y;
-    // there will always be exactly as many rule sets as rows or cols
+    Grid g = {
+            .n_rows = size_y,
+            .n_cols = size_x,
+            .row_max_rules = 0,
+            .col_max_rules = 0,
+    };
     g.row_rules.resize(size_y);
     g.col_rules.resize(size_x);
-    // clear before first use
     g.row_rules.clear();
     g.col_rules.clear();
-    g.row_max_rules = 0;
-    g.col_max_rules = 0;
-    // resize for rows
-    g.cells.resize(size_y);
-    // resize each column
-    for (int i = 0; i < size_y; i++) {
-        g.cells[i].resize(size_x, Empty);
-    }
+    g.cells.resize(size_x * size_y, Empty);
     return g;
 }
 
-Bounds draw_grid(const int n_cols, const int n_rows, const int cell_size, const int left, const int right, const int top, const int bottom, const Color color) {
+size_t get_x(const size_t index, const Grid& grid) {
+    return index % grid.n_cols;
+}
+
+size_t get_y(const size_t index, const Grid& grid) {
+    return index / grid.n_cols;
+}
+
+size_t get_index(const size_t x, const size_t y, const Grid& grid) {
+    return y * grid.n_cols + x;
+}
+
+size_t get_index(const Point& point, const Grid& grid) {
+    return get_index(point.x, point.y, grid);
+}
+
+void draw_grid(StateRec& rec, const Color color) {
     // why draw n*m boxes when you could draw n+m lines
-    Bounds b = compute_bounds(n_cols, n_rows, cell_size, left, right, top, bottom);
     // draw vertical lines
-    for (int i = 0; i <= n_cols; i++) {
-        const int x = i * cell_size + b.left;
-        DrawLine(x, b.top, x, b.bottom, color);
+    for (int i = 0; i <= rec.grid.n_cols; i++) {
+        const int x = i * rec.cell_size + rec.bounds.left;
+        DrawLine(x, rec.bounds.top, x, rec.bounds.bottom, color);
     }
     // draw horizontal lines
-    for (int i = 0; i <= n_rows; i++) {
-        const int y = i * cell_size + b.top;
-        DrawLine(b.left, y, b.right, y, color);
+    for (int i = 0; i <= rec.grid.n_rows; i++) {
+        const int y = i * rec.cell_size + rec.bounds.top;
+        DrawLine(rec.bounds.left, y, rec.bounds.right, y, color);
     }
-    return b;
 }
 
-void color_cells(const std::vector<size_t>& x, const std::vector<size_t>& y, const FillType fill, const int cell_size, const Bounds& bounds, const Color color, const float thickness, const float radius) {
+void color_cells(const StateRec& rec, const Style& style) {
     float left;
     float right;
     float top;
     float bottom;
-    // because this is designed to overwrite the already drawn grid state,
-    // all fills have a background rect added to them
-    for (int i = 0; i < x.size(); i++) {
-        switch (fill) {
+    for (int i = 0; i < rec.grid.n_rows * rec.grid.n_cols; i++) {
+        size_t x = get_x(i, rec.grid);
+        size_t y = get_y(i, rec.grid);
+        left = rec.bounds.left + x * rec.cell_size;
+        top = rec.bounds.top + y * rec.cell_size;
+
+        switch (rec.grid.cells[i]) {
             case Solid:
-                DrawRectangle(bounds.left + x[i] * cell_size, bounds.top + y[i] * cell_size, cell_size, cell_size, color);
+                DrawRectangle(left, top, rec.cell_size, rec.cell_size, style.foreground);
                 break;
             case Empty:
-                DrawRectangle(bounds.left + x[i] * cell_size, bounds.top + y[i] * cell_size, cell_size, cell_size, BACKGROUND);
                 break;
             case Cross:
-                left = bounds.left + x[i] * cell_size;
-                right = left + cell_size;
-                top = bounds.top + y[i] * cell_size;
-                bottom = top + cell_size;
-                DrawRectangle(left, top, cell_size, cell_size, BACKGROUND);
-                DrawLineEx({left, top}, {right, bottom}, thickness, color);
-                DrawLineEx({left, bottom}, {right, top}, thickness, color);
+                right = left + rec.cell_size;
+                bottom = top + rec.cell_size;
+                DrawLineEx({left, top}, {right, bottom}, style.thickness, style.foreground);
+                DrawLineEx({left, bottom}, {right, top}, style.thickness, style.foreground);
                 break;
             case Note:
-                DrawCircle(bounds.left + x[i] * cell_size + cell_size / 2, bounds.top + y[i] * cell_size + cell_size / 2, radius, color);
+                DrawCircle(left + rec.cell_size / 2, top + rec.cell_size / 2, style.radius, style.foreground);
+                break;
+        }
+    }
+
+    FillType fill;
+    if (rec.drag == CLEAR) {
+        fill = Empty;
+    } else {
+        fill = rec.current_fill;
+    }
+
+    // because this is designed to overwrite the already drawn grid state,
+    // all fills have a background rect added to them
+    for (auto& p: rec.current_line) {
+        switch (fill) {
+            case Solid:
+                DrawRectangle(rec.bounds.left + p.x * rec.cell_size, rec.bounds.top + p.y * rec.cell_size, rec.cell_size, rec.cell_size, style.foreground);
+                break;
+            case Empty:
+                DrawRectangle(rec.bounds.left + p.x * rec.cell_size, rec.bounds.top + p.y * rec.cell_size, rec.cell_size, rec.cell_size, style.background);
+                break;
+            case Cross:
+                left = rec.bounds.left + p.x * rec.cell_size;
+                right = left + rec.cell_size;
+                top = rec.bounds.top + p.y * rec.cell_size;
+                bottom = top + rec.cell_size;
+                DrawRectangle(left, top, rec.cell_size, rec.cell_size, style.background);
+                DrawLineEx({left, top}, {right, bottom}, style.thickness, style.foreground);
+                DrawLineEx({left, bottom}, {right, top}, style.thickness, style.foreground);
+                break;
+            case Note:
+                DrawCircle(rec.bounds.left + p.x * rec.cell_size + rec.cell_size / 2, rec.bounds.top + p.y * rec.cell_size + rec.cell_size / 2, style.radius, style.foreground);
                 break;
         }
     }
 }
 
-void color_cells(const Grid& g, const int cell_size, const Bounds& bounds,
-                 const Color color, const float thickness, const float radius) {
-    float left;
-    float right;
-    float top;
-    float bottom;
-    for (int y = 0; y < g.n_rows; y++) {
-        for (int x = 0; x < g.n_cols; x++) {
-            switch (g.cells[y][x]) {
-                case Solid:
-                    DrawRectangle(bounds.left + x * cell_size, bounds.top + y * cell_size, cell_size, cell_size, color);
-                    break;
-                case Empty:
-                    break;
-                case Cross:
-                    left = bounds.left + x * cell_size;
-                    right = left + cell_size;
-                    top = bounds.top + y * cell_size;
-                    bottom = top + cell_size;
-                    DrawLineEx({left, top}, {right, bottom}, thickness, color);
-                    DrawLineEx({left, bottom}, {right, top}, thickness, color);
-                    break;
-                case Note:
-                    DrawCircle(bounds.left + x * cell_size + cell_size / 2, bounds.top + y * cell_size + cell_size / 2, radius, color);
-                    break;
-            }
-        }
-    }
+size_t find_cell_x(const float x, const StateRec& rec) {
+    return (x - rec.bounds.left) / rec.cell_size;
 }
 
-std::tuple<size_t, size_t> find_cell(const Vector2& pos, const int cell_size, const Bounds bounds) {
-    int x = (pos.x - bounds.left) / cell_size;
-    int y = (pos.y - bounds.top) / cell_size;
-    return std::make_tuple(x, y);
+size_t find_cell_y(const float y, const StateRec& rec) {
+    return (y - rec.bounds.top) / rec.cell_size;
 }
 
-void set_cell(Grid& g, const size_t x, const size_t y, const FillType fill, bool clear) {
-    if (x >= g.n_cols || y >= g.n_rows) {
+void set_cell(const StateRec& rec, const Point& point) {
+    if (point.x >= rec.grid.n_cols || point.y >= rec.grid.n_rows) {
         return;
     }
-    switch (g.cells[y][x]) {
+    size_t index = get_index(point, rec.grid);
+    switch (rec.grid.cells[index]) {
         case Empty:
-            g.cells[y][x] = fill;
+            rec.grid.cells[index] = rec.current_fill;
             break;
         case Solid:
-            if (fill == Solid) {
-                g.cells[y][x] = Empty;
+            if (rec.current_fill == Solid) {
+                rec.grid.cells[index] = Empty;
             }
             break;
         case Cross:
-            if (fill == Cross) {
-                g.cells[y][x] = Empty;
+            if (rec.current_fill == Cross) {
+                rec.grid.cells[index] = Empty;
             }
             break;
         case Note:
-            if (fill == Note) {
-                g.cells[y][x] = Empty;
+            if (rec.current_fill == Note) {
+                rec.grid.cells[index] = Empty;
             } else {
-                g.cells[y][x] = fill;
+                rec.grid.cells[index] = rec.current_fill;
             }
             break;
     }

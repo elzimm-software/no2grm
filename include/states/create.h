@@ -1,15 +1,17 @@
-#ifndef NONOGRAM_CREATE_H
-#define NONOGRAM_CREATE_H
+#ifndef NO2GRM_CREATE_H
+#define NO2GRM_CREATE_H
 
-#include "grid.h"
 #include "state.h"
-#include "bounds.h"
+#include "colors.h"
+#include "grid.h"
 
-StateFn new_create_state();
+static StateFn new_create_state();
+
+const StateFn CREATE_STATE = new_create_state();
 
 namespace create_fn {
     bool event_handler(StateFn& fn, StateRec& rec);
-    void draw(const StateRec& rec);
+    void draw(StateRec& rec);
 }
 
 #endif

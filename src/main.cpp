@@ -1,6 +1,18 @@
 #include "raylib.h"
-#include "state.h"
-#include "grid.h"
+#include "bounds.h"
+
+const int PADDING = 100;
+const Bounds MAX_BOUNDS = {
+        .left = PADDING,
+        .right = GetScreenWidth() - PADDING,
+        .top = PADDING,
+        .bottom = GetScreenHeight() - PADDING
+};
+
+/*
+ * Its worth noting that none of this works at present but Im losing my mind and I cant figure out why it doesnt work.
+ * I suspect some sort of circular dependency issue that Im just not invested enough right now to fix.
+ */
 
 int main() {
     // ----- INIT WINDOW -----
@@ -17,32 +29,29 @@ int main() {
     SetExitKey(NULL);
 
     // ----- INIT STATE -----
-    StateRec state_rec;
-    state_rec.grid = new_grid(15, 15);
-    state_rec.padding = 100;
-    state_rec.cell_size = 50;
-    state_rec.actual_bounds = compute_bounds(state_rec.grid.n_cols, state_rec.grid.n_rows, state_rec.cell_size, state_rec.padding, GetScreenWidth() - state_rec.padding, state_rec.padding, GetScreenHeight() - state_rec.padding);
-    // max possible size for a single draw (I think?)
-    state_rec.current_line_x.resize(state_rec.grid.n_rows * state_rec.grid.n_cols);
-    state_rec.current_line_y.resize(state_rec.grid.n_rows * state_rec.grid.n_cols);
-    state_rec.current_line_x.clear();
-    state_rec.current_line_y.clear();
+    StateRec rec = {
+            .grid = new_grid(15, 15),
+            .cell_size = 50,
+    };
+
+    compute_bounds(rec, {.left = rec.cell_size, .right = GetScreenWidth() - PADDING, .top = PADDING, .bottom = GetScreenHeight() - PADDING});
+
+    rec.current_line.resize(rec.grid.n_rows * rec.grid.n_cols);
+    rec.current_line.clear();
 
     // ----- DEFINE STATES -----
-    state_rec.home = new_home_state();
-    state_rec.create = new_create_state();
     // home menu is initial state
-    StateFn state_fn = state_rec.home;
+    StateFn state_fn = HOME_STATE;
 
     // ----- EVENT AND RENDER LOOP -----
     while (!WindowShouldClose()) {
         // ----- EVENT HANDING -----
-        if (!state_fn.event_handler(state_fn, state_rec)) {
+        if (!state_fn.event_handler(state_fn, rec)) {
             break;
         }
 
         // ----- RENDERING -----
-        state_fn.draw(state_rec);
+        state_fn.draw(rec);
     }
 
     // ----- CLEANUP -----

@@ -1,5 +1,5 @@
-#ifndef NONOGRAM_RULES_H
-#define NONOGRAM_RULES_H
+#ifndef NO2GRM_RULES_H
+#define NO2GRM_RULES_H
 
 #include <vector>
 

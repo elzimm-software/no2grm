@@ -1,10 +1,10 @@
-#ifndef NONOGRAM_GRID_H
-#define NONOGRAM_GRID_H
+#ifndef NO2GRM_GRID_H
+#define NO2GRM_GRID_H
 
 #include <vector>
 #include "raylib.h"
-#include "bounds.h"
 #include "rules.h"
+#include "state.h"
 
 enum FillType {
     Empty,
@@ -20,28 +20,47 @@ struct Grid {
     int col_max_rules;
     std::vector<Rules> row_rules;
     std::vector<Rules> col_rules;
-    std::vector<std::vector<FillType>> cells;
+    std::vector<FillType> cells;
+};
+
+struct Style {
+    Color foreground;
+    Color background;
+    float thickness;
+    float radius;
+};
+
+struct Point {
+    size_t x;
+    size_t y;
+};
+
+enum DragType {
+    DRAW,
+    CLEAR
 };
 
 /// Create a new grid structure with the given dimensions.
-Grid new_grid(int size_x, int size_y);
+Grid new_grid(size_t size_x, size_t size_y);
+
+size_t get_x(const size_t index, const Grid& grid);
+
+size_t get_y(const size_t index, const Grid& grid);
+
+size_t get_index(const size_t x, const size_t y, const Grid& grid);
+
+size_t get_index(const Point& point, const Grid& grid);
 
 /// Draws grid of squares
-/// Returns actual size of grid after scaling
-Bounds draw_grid(int n_cols, int n_rows, int cell_size, int left, int right, int top, int bottom, Color color);
+void draw_grid(StateRec& rec, Color color);
 
-/// Draws points in vector
-/// Used for temporary overwrites of grid state
-void color_cells(const std::vector<size_t>& x, const std::vector<size_t>& y, FillType fill, int cell_size, const Bounds& bounds, Color color, float thickness, float radius);
-
-/// Draws grid state
-void color_cells(const Grid& g, int cell_size, const Bounds& bounds,
-                 Color color, float thickness, float radius);
+void color_cells(StateRec& rec, Style& style);
 
 /// Compute the x and y index of the cell a the given position.
-std::tuple<size_t, size_t> find_cell(const Vector2& pos, int cell_size, Bounds bounds);
+size_t find_cell_x(float x, StateRec& rec);
+size_t find_cell_y(float y, StateRec& rec);
 
 /// Change the state of the cell at the given index
-void set_cell(Grid& g, size_t x, size_t y, FillType fill, bool clear);
+void set_cell(StateRec& rec, Point& point);
 
 #endif

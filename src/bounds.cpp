@@ -1,16 +1,6 @@
 #include "bounds.h"
-#include "state.h"
 
-Bounds new_bounds(const int left, const int right, const int top, const int bottom) {
-    Bounds b;
-    b.left = left;
-    b.right = right;
-    b.top = top;
-    b.bottom = bottom;
-    return b;
-}
-
-Bounds compute_bounds(const StateRec& rec, const Bounds& bounds) {
+void compute_bounds(StateRec& rec, const Bounds& bounds) {
     const int width = rec.cell_size * rec.grid.n_cols;
     const int height = rec.cell_size * rec.grid.n_rows;
     const int horizontal_offset = (bounds.right - bounds.left - width) / 2;
@@ -20,5 +10,10 @@ Bounds compute_bounds(const StateRec& rec, const Bounds& bounds) {
     const int end_x = bounds.right - horizontal_offset;
     const int end_y = bounds.bottom - vertical_offset;
 
-    return new_bounds(start_x, end_x, start_y, end_y);
+    rec.bounds = {
+            .left = start_x,
+            .right = end_x,
+            .top = start_y,
+            .bottom = end_y,
+    };
 }
