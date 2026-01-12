@@ -4,6 +4,8 @@ import (
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
+const SCROLL_ZOOM_RATE = 2
+
 var CREATE = Create{}
 
 type Create struct {
@@ -22,6 +24,13 @@ func (c *Create) handleEvents() bool {
 	if rl.IsKeyPressed(rl.KeyEscape) {
 		c.rec.fn = &HOME
 	}
+	if rl.GetMouseWheelMove() > 0 {
+		c.rec.changeCellSize(SCROLL_ZOOM_RATE)
+	}
+	if rl.GetMouseWheelMove() < 0 {
+		c.rec.changeCellSize(-SCROLL_ZOOM_RATE)
+	}
+
 	solidTest := c.checkAndAddAt(rl.MouseButtonLeft, Solid, Cross)
 	crossTest := c.checkAndAddAt(rl.MouseButtonRight, Cross, Solid)
 	noteTest := c.checkAndAddAt(rl.MouseButtonMiddle, Note, Solid, Cross)
@@ -55,7 +64,7 @@ func (c *Create) checkAndAddAt(mouseButton rl.MouseButton, fill FillType, protec
 	}
 	if (rl.IsMouseButtonPressed(mouseButton) && c.rec.fill == Empty) || (rl.IsMouseButtonDown(mouseButton) && c.rec.fill == fill) {
 		p := c.rec.findCellXY(rl.GetMousePosition())
-		if p.x < c.rec.grid.nCols && p.y < c.rec.grid.nRows {
+		if p.x >= 0 && p.y >= 0 && p.x < c.rec.grid.nCols && p.y < c.rec.grid.nRows {
 			index := c.rec.grid.getIndex(&p)
 			if c.rec.grid.cells[index] == fill && c.rec.fill == Empty {
 				c.rec.drag = Clear

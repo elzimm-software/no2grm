@@ -14,31 +14,38 @@ type StateFn interface {
 }
 
 type State struct {
-	fn       StateFn
-	fill     FillType
-	line     []Point
-	grid     Grid
-	bounds   Bounds
-	cellSize int32
-	drag     DragType
-	style    Style
+	fn        StateFn
+	fill      FillType
+	line      []Point
+	grid      Grid
+	maxBounds Bounds
+	bounds    Bounds
+	cellSize  int32
+	drag      DragType
+	style     Style
 }
 
 func newState(cellSize int32, nRows int32, nCols int32, bounds *Bounds) *State {
 	g := newGrid(nRows, nCols)
 	s := State{
-		fn:       &HOME,
-		fill:     Empty,
-		line:     make([]Point, 0, nRows*nCols),
-		grid:     *g,
-		bounds:   *bounds.computeBounds(cellSize, g.nRows, g.nCols),
-		cellSize: cellSize,
-		drag:     Draw,
-		style:    *newStyle(rl.RayWhite, rl.Color{R: 0x33, G: 0x33, B: 0x33, A: 0xff}, 2.0, 4.0),
+		fn:        &HOME,
+		fill:      Empty,
+		line:      make([]Point, 0, nRows*nCols),
+		grid:      *g,
+		maxBounds: *bounds,
+		bounds:    *bounds.computeBounds(cellSize, g.nRows, g.nCols),
+		cellSize:  cellSize,
+		drag:      Draw,
+		style:     *newStyle(rl.RayWhite, rl.Color{R: 0x33, G: 0x33, B: 0x33, A: 0xff}, 2.0, 4.0),
 	}
 	fmt.Println(bounds)
 	fmt.Println(s.bounds)
 	return &s
+}
+
+func (s *State) changeCellSize(diff int32) {
+	s.cellSize += diff
+	s.bounds = *s.maxBounds.computeBounds(s.cellSize, s.grid.nRows, s.grid.nCols)
 }
 
 func (s *State) declareStates(states ...StateFn) {

@@ -18,7 +18,7 @@ func main() {
 	rl.SetExitKey(rl.KeyNull)
 
 	var maxBounds = newBounds(PADDING, int32(rl.GetScreenWidth())-PADDING, PADDING, int32(rl.GetScreenHeight())-PADDING)
-	var rec = newState(50, 15, 15, maxBounds)
+	var rec = newState(25, 15, 15, maxBounds)
 	rec.declareStates(&HOME, &CREATE)
 
 	for !rl.WindowShouldClose() {
