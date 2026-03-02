@@ -20,7 +20,7 @@
 | Bit | Name         | Description                                                                   |
 |-----|--------------|-------------------------------------------------------------------------------|
 | 0   | HAS_CHECKSUM | If set, a 4-byte CRC32 checksum follows the [**Data**](#Data-Structure) block |
-| 1-7 | RESERVED     | Must be set to `0x00`                                                         |
+| 1-7 | RESERVED     | Must be set to `0b0`                                                          |
 
 ## Data Structure
 
