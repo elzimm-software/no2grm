@@ -1,4 +1,5 @@
 
-add_executable(no2grm main.cpp)
+add_executable(no2grm WIN32 main.cpp)
 
-target_include_directories(no2grm include)
+target_include_directories(no2grm PUBLIC include)
+target_link_libraries(no2grm PRIVATE SDL3::SDL3)
