@@ -1,5 +1,7 @@
 #include "grid.h"
 
+#include <iterator>
+
 #include "sdl_config.h"
 #include "style.h"
 
@@ -41,6 +43,13 @@ unsigned int grid::Grid::get_n_rows() const {
 }
 
 void grid::Grid::draw_grid(SDL_Renderer* renderer) {
+    Uint8 r, g, b, a;
+    SDL_GetRenderDrawColor(renderer, &r, &g, &b, &a);
+    SDL_SetRenderDrawColor(renderer, GRID_COLOR, SDL_ALPHA_OPAQUE);
+    for (int i = 0; i < n_elements; i += 4) {
+
+    }
+    SDL_SetRenderDrawColor(renderer, r, g, b, a);
 }
 
 void grid::Grid::compute_grid_points() const {
